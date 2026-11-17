@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <p><a href="/create">+ Новый пост</a></p>
+    <h1>Посты</h1>
+    {{if .Posts}}
+        <ul>
+            {{range .Posts}}
+                <li>
+                    <strong>{{.Title}}</strong>
+                    {{.Content}}
+                </li>
+            {{end}}
+        </ul>
+    {{else}}
+        <p>Пока нет ни одного поста. <a href="/create">Создать пост</a></p>
+    {{end}}
+</body>
+</html>
