@@ -12,7 +12,12 @@
             {{range .Posts}}
                 <li>
                     <strong>{{.Title}}</strong>
-                    {{.Content}}
+                    {{.Content}}<br>
+                    <small>{{.CreatedAt.Format "02.01.2006 15:04"}}</small><br>
+                    <a class="btn btn-primary" href="/edit?id={{.ID}}">Редактировать</a>
+                    <form action="/delete?id={{.ID}}" method="post">
+                        <button class="btn btn-danger" onclick="return confirm('Удалить пост?')">Удалить</button>
+                    </form>
                 </li>
             {{end}}
         </ul>

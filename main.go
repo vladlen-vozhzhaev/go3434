@@ -4,12 +4,8 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"strconv"
 )
-
-type Post struct {
-	Title   string
-	Content string
-}
 
 var templates = template.Must(template.ParseGlob("templates/*.html"))
 var posts []Post
@@ -22,6 +18,11 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
+	posts, err := getAllPosts(r.Context())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	data := struct {
 		Posts []Post
 	}{
@@ -44,10 +45,33 @@ func createHandler(w http.ResponseWriter, r *http.Request) {
 		content := r.FormValue("content")
 		if title == "" || content == "" {
 			http.Error(w, "title or content is empty", http.StatusBadRequest)
+			return
 		}
-		posts = append(posts, Post{title, content})
+		if err := createPost(r.Context(), title, content); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 		http.Redirect(w, r, "/", http.StatusFound)
 	}
+}
+
+func editHandler(w http.ResponseWriter, r *http.Request) {
+	idStr := r.URL.Query().Get("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Неверный ID", http.StatusInternalServerError)
+	}
+
+	if r.Method == http.MethodGet {
+
+	}
+
+	if r.Method == http.MethodPost {
+
+	}
+}
+
+func deleteHandler(w http.ResponseWriter, r *http.Request) {
+
 }
 
 func main() {
