@@ -1,28 +1,45 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
 </head>
 <body>
-    <p><a href="/create">+ Новый пост</a></p>
     <h1>Посты</h1>
-    {{if .Posts}}
-        <ul>
-            {{range .Posts}}
-                <li>
-                    <strong>{{.Title}}</strong>
-                    {{.Content}}<br>
-                    <small>{{.CreatedAt.Format "02.01.2006 15:04"}}</small><br>
-                    <a class="btn btn-primary" href="/edit?id={{.ID}}">Редактировать</a>
-                    <form action="/delete?id={{.ID}}" method="post">
-                        <button class="btn btn-danger" onclick="return confirm('Удалить пост?')">Удалить</button>
-                    </form>
-                </li>
-            {{end}}
-        </ul>
-    {{else}}
-        <p>Пока нет ни одного поста. <a href="/create">Создать пост</a></p>
-    {{end}}
+    <div id="posts-container">
+        <p>Загрузка...</p>
+    </div>
+    <p><a href="/create">+ Новый пост</a></p>
+
+    <script>
+        const container = document.getElementById('posts-container');
+        function loadPosts(){
+            fetch('api/posts')
+                .then(response => response.json())
+                .then(result =>{
+                    console.log(result)
+                    renderPosts(result)
+                })
+        }
+        function renderPosts(posts){
+            if (posts.length === 0){
+                container.innerHTML `<p>Пока нет постов</p>`
+                return;
+            }
+            const list = document.createElement('ul');
+            posts.forEach(function (post){
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${post.title}</strong><br><span>${post.content}</span>`
+                list.appendChild(li)
+            })
+            container.innerHTML = "";
+            container.appendChild(list)
+
+        }
+        loadPosts()
+    </script>
 </body>
 </html>
